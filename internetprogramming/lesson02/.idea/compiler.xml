@@ -10,5 +10,10 @@
         <module name="socketClient" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="socketClient" target="17" />
+      <module name="sockets" target="17" />
+      <module name="socketServer" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>
