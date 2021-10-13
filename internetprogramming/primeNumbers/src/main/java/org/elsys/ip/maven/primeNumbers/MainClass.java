@@ -5,6 +5,9 @@ public class MainClass {
         for ( String i : args) {
             try {
                 int parsedI = Integer.parseInt(i);
+                if (parsedI <= Integer.MIN_VALUE || parsedI >= Integer.MAX_VALUE){
+                    System.out.println(parsedI + " is out of bounds");
+                }
                 boolean flag = false;
 
                 for (int j = 2; j <= parsedI / 2; ++j) {
