@@ -4,9 +4,14 @@ from .models import Currency
 
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+    # return HttpResponse("Hello, world. You're at the polls index.")
+    return render(request, "index.html")
 
 
 def trending(request):
     trending = Currency.objects.order_by('-price')[0]
-    return HttpResponse("The currently trending currency is: " + str(trending))
+    context = {
+        "currency_name": trending.name,
+        "currency_price": str(trending)
+    }
+    return render(request, "trending.html", context)
