@@ -5,4 +5,6 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('trending', views.trending, name='trending'),
+    path('lucky', views.lucky, name='lucky'),
+    path('api', views.trending_json, name='api'),
 ]
