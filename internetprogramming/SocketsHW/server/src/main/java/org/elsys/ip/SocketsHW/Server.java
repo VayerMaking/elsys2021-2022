@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Server {
@@ -37,7 +39,7 @@ public class Server {
             try {
                 out = new PrintWriter(clientSocket.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
+                ArrayList<String> validTimezones = new ArrayList<>(Arrays.asList("+00:00", "+01:00", "+02:00", "+03:00", "+04:00", "-10:00", "-09:00", "-04:00", "-03:00", "-05:00", "-06:00", "-07:00", "-08:00", "-02:00", "+00:00", "-01:00", "+11:00", "+12:00", "+05:00", "+07:00", "+08:00", "+09:00", "+10:00"));
 //                name = in.readLine();
 //                server.addToMap(name, this);
 
@@ -50,6 +52,32 @@ public class Server {
                     if (line.equals("exit") || line.equals("quit")){
                         clientSocket.close();
                         dispose();
+                    }
+                    if (line.startsWith("time")){
+                        try{
+                            LocalTime rawTime = LocalTime.now();
+                            String timezone = line.substring(5).split(" ")[0];
+                            Integer hours = Integer.parseInt(timezone.substring(1, 3));
+                            String flag = timezone.substring(0, 1);
+                            LocalTime ajustedTime;
+
+                            if (!validTimezones.contains(timezone)) {
+                                out.println("invalid time zone");
+                            }
+
+                            if (flag.equals("+")) {
+                                ajustedTime = rawTime.plusHours(hours);
+                            } else if (flag.equals("-")) {
+                                ajustedTime = rawTime.minusHours(hours);
+                            } else {
+                                ajustedTime = rawTime;
+                            }
+                            String time = ajustedTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+
+                            out.println(time);
+                        }catch (Exception e){
+                            out.println("invalid input");
+                        }
                     }
                     //server.printlnAll(line);
                 }
