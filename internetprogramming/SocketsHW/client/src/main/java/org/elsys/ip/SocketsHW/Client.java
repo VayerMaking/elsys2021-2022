@@ -58,16 +58,20 @@ public class Client {
             System.exit(1);
         }
 
-
-        if(!InetAddress.getByName(host).isReachable(1000)){
-            System.err.println("invalid host");
-            System.exit(3);
+        if(args.length > 1){
+            System.err.println("invalid arguments");
+            System.exit(1);
         }
+
+//        if(!InetAddress.getByName(host).isReachable(1000)){
+//            System.err.println("invalid host");
+//            System.exit(3);
+//        }
 
         try {
             client.startConnection(host, port);
         } catch (UnknownHostException e){
-            System.err.println("connection not possible");
+            System.err.println("invalid host");
             System.exit(3);
         } catch (IOException e){
             System.err.println("connection not possible");
