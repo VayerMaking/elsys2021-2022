@@ -1,6 +1,7 @@
 package org.elsys.ip.swtimer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,19 +59,28 @@ public class TimerController {
         ObjectMapper objectMapper = new ObjectMapper();
         Timer timer = null;
         try {
-            timer = objectMapper.readValue(json, Timer.class);
+            try {
+                timer = objectMapper.readValue(json, Timer.class);
+            }catch (InvalidFormatException e){
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
             if(timer.time != null){
                 timer.setId(createID());
                 String[] userTime = timer.time.split(":");
-                long userHours = Long.parseLong(userTime[0]);
-                long userMinutes = Long.parseLong(userTime[1]);
-                long userSeconds = Long.parseLong(userTime[2]);
-                timer.hours = Math.toIntExact(userHours);
-                timer.minutes = Math.toIntExact(userMinutes);
-                timer.seconds = Math.toIntExact(userSeconds);
-                String formattedTime = String.format("%02d:%02d:%02d", userHours, userMinutes, userSeconds);
-                timer.time = formattedTime;
-                timers.add(timer);
+                try {
+                    long userHours = Long.parseLong(userTime[0]);
+                    long userMinutes = Long.parseLong(userTime[1]);
+                    long userSeconds = Long.parseLong(userTime[2]);
+                    timer.hours = Math.toIntExact(userHours);
+                    timer.minutes = Math.toIntExact(userMinutes);
+                    timer.seconds = Math.toIntExact(userSeconds);
+                    String formattedTime = String.format("%02d:%02d:%02d", userHours, userMinutes, userSeconds);
+                    timer.time = formattedTime;
+                    timers.add(timer);
+                } catch (NumberFormatException e) {
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+
             }else {
                 timer.setId(createID());
                 long userHours = timer.hours;
